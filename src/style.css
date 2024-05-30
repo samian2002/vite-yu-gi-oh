@@ -1,0 +1,50 @@
+body {
+  background-color: #343a40;
+  color: #f8f9fa;
+}
+
+.card {
+  background-color: #495057;
+  color: #f8f9fa;
+  border: none;
+}
+
+.card .card-body {
+  padding: 1rem;
+}
+
+.card .card-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
+.card .card-text {
+  margin-bottom: 1rem;
+}
+
+.card .btn-link {
+  color: #17a2b8;
+  text-decoration: none;
+}
+
+.card .btn-link:hover {
+  text-decoration: underline;
+}
+
+.card .btn-primary {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.card .btn-primary:hover {
+  background-color: #138496;
+  border-color: #117a8b;
+}
+
+.app-title {
+  background-color: #007bff;
+  color: white;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  display: inline-block;
+}
