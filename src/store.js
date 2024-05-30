@@ -1,7 +1,8 @@
 import { reactive } from 'vue';
 
 const store = reactive({
-  cards: []
+  cards: [],
+  archetypes: [] // Nuovo array per gli archetipi
 });
 
 export default store;

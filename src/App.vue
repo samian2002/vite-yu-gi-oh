@@ -3,37 +3,83 @@
     <header class="my-5 text-center">
       <h1 class="app-title">YU-GI-OH</h1>
     </header>
+    <ResultsCount :count="cardsCount" />
+    <div class="mb-4 text-center">
+      <select v-model="selectedArchetype" @change="fetchCardsByArchetype">
+        <option value="">Select Archetype</option>
+        <option v-for="archetype in archetypes" :key="archetype" :value="archetype">
+          {{ archetype }}
+        </option>
+      </select>
+    </div>
     <CardsList />
   </div>
 </template>
 
 <script>
+import { computed } from 'vue';
 import CardsList from './components/CardsList.vue';
+import ResultsCount from './components/ResultsCount.vue';
 import store from './store.js';
 import axios from 'axios';
 
 export default {
   name: 'App',
   components: {
-    CardsList
+    CardsList,
+    ResultsCount
+  },
+  data() {
+    return {
+      selectedArchetype: ""
+    };
+  },
+  computed: {
+    archetypes() {
+      return store.archetypes;
+    },
+    cardsCount() {
+      return store.cards.length;
+    }
   },
   created() {
-    this.fetchCardsInBlocks(30, 90); //30esima alla 90esima
+    this.fetchArchetypes();
+    this.fetchCardsInBlocks(30, 90);
   },
   methods: {
+    async fetchArchetypes() {
+      try {
+        const response = await axios.get('https://db.ygoprodeck.com/api/v7/archetypes.php');
+        store.archetypes = response.data.map(archetype => archetype.archetype_name);
+      } catch (error) {
+        console.error('Error fetching archetypes:', error);
+      }
+    },
     async fetchCardsInBlocks(start, end) {
       const numPerRequest = 20;
-      const requests = [];
+      store.cards = [];
+
       for (let offset = start; offset < end; offset += numPerRequest) {
-        requests.push(axios.get(`https://db.ygoprodeck.com/api/v7/cardinfo.php?num=${numPerRequest}&offset=${offset}`));
+        try {
+          const response = await axios.get(`https://db.ygoprodeck.com/api/v7/cardinfo.php?num=${numPerRequest}&offset=${offset}`);
+          store.cards = store.cards.concat(response.data.data);
+        } catch (error) {
+          console.error('Error fetching cards:', error);
+          break;
+        }
       }
+      console.log('API response:', store.cards); // Log dei dati ricevuti
+    },
+    async fetchCardsByArchetype() {
+      if (!this.selectedArchetype) {
+        return this.fetchCardsInBlocks(30, 90);
+      }
+
       try {
-        const responses = await Promise.all(requests);
-        const cards = responses.flatMap(response => response.data.data);
-        console.log('API response:', cards); // Log dei dati ricevuti
-        store.cards = cards;
+        const response = await axios.get(`https://db.ygoprodeck.com/api/v7/cardinfo.php?archetype=${this.selectedArchetype}`);
+        store.cards = response.data.data;
       } catch (error) {
-        console.error('Error fetching cards:', error);
+        console.error('Error fetching cards by archetype:', error);
       }
     }
   }
@@ -47,7 +93,7 @@ body {
 }
 
 .app-title {
-  background-color: #ff0a0a;
+  background-color: #007bff;
   color: white;
   padding: 1rem;
   border-radius: 0.5rem;
