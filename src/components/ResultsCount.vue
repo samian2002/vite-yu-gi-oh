@@ -1,26 +1,21 @@
 <template>
-    <div class="results-count">
-      <p>Total Results: {{ count }}</p>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    name: 'ResultsCount',
-    props: {
-      count: {
-        type: Number,
-        required: true
-      }
-    }
+  <span class="results-count">{{ count }} carte</span>
+</template>
+
+<script setup>
+defineProps({
+  count: {
+    type: Number,
+    required: true
   }
-  </script>
-  
-  <style scoped>
-  .results-count {
-    margin: 20px 0;
-    font-size: 1.2rem;
-    color: #fff;
-  }
-  </style>
-  
+})
+</script>
+
+<style scoped>
+.results-count {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+</style>
